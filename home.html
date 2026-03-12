@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home | Student Dropout Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <style>
+        .home-card h2 {
+            font-size: 36px !important;
+            font-weight: 900 !important;
+            color: #1a237e !important;
+            margin-bottom: 15px !important;
+            letter-spacing: 1px !important;
+        }
+        
+        .home-card p {
+            font-size: 18px !important;
+            font-weight: 600 !important;
+            color: #23a6d5 !important;
+            margin-bottom: 30px !important;
+            letter-spacing: 0.5px !important;
+        }
+    </style>
+</head>
+<body>
+
+<div class="card home-card">
+    <h2>🏠 Welcome Home</h2>
+    <p>Student Dropout Prediction System</p>
+
+    <a href="/predict"><button>📊 Start Prediction</button></a>
+    <a href="/login"><button style="background: linear-gradient(135deg, #23a6d5 0%, #ee7752 100%);">🔐 Login</button></a>
+</div>
+
+</body>
+</html>

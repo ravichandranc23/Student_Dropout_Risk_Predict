@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>AI Dashboard</title>
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+
+<body>
+
+<div class="animated-bg"></div>
+
+<div class="glass-card">
+<h1>📊 Live Prediction Dashboard</h1>
+
+<div class="stats">
+<div class="stat-box">Total Predictions<br><b>{{ total }}</b></div>
+<div class="stat-box">Dropout Risk<br><b>{{ dropout }}</b></div>
+<div class="stat-box">Likely Continue<br><b>{{ genuine }}</b></div>
+</div>
+
+<canvas id="dropoutChart"></canvas>
+
+<a href="/" class="dash-btn">➕ New Prediction</a>
+</div>
+
+<script>
+const ctx = document.getElementById('dropoutChart').getContext('2d');
+
+new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+        labels: ['Dropout Risk','Likely Continue'],
+        datasets: [{
+            data: [{{ dropout }}, {{ genuine }}],
+            backgroundColor: ['#ff4d4d','#00ffcc'],
+            hoverOffset: 20
+        }]
+    },
+    options: {
+        animation: {
+            animateRotate: true,
+            duration: 1800
+        },
+        plugins:{
+            legend:{
+                labels:{color:'white'}
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>

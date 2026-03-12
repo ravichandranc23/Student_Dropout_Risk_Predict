@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction | Student Dropout Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
+        .progress-indicator {
+            display: flex;
+            gap: 8px;
+            justify-content: center;
+            margin-bottom: 25px;
+        }
+        
+        .progress-dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: rgba(231, 60, 126, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .progress-dot.active {
+            background: linear-gradient(135deg, #ee7752, #e73c7e);
+            box-shadow: 0 0 10px rgba(231, 60, 126, 0.6);
+            transform: scale(1.3);
+        }
+        
+        .form-section {
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(231, 60, 126, 0.1);
+        }
+        
+        .form-section:last-of-type {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            color: #e73c7e;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+        
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+        
+        .form-grid .form-group {
+            margin-bottom: 0;
+        }
+        
+        @media (max-width: 600px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card">
+    <h1>🎯 Student Details Form</h1>
+    <p style="text-align: center; margin-bottom: 25px; color: #666;">Fill in all details for accurate dropout prediction</p>
+
+    <div class="progress-indicator">
+        <div class="progress-dot active"></div>
+        <div class="progress-dot"></div>
+        <div class="progress-dot"></div>
+    </div>
+
+    <form method="post" action="/predict">
+        <!-- Basic Information Section -->
+        <div class="form-section">
+            <div class="section-title">📋 Basic Information</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>👤 Age of Student</label>
+                    <input type="number" name="age" min="15" max="50" placeholder="15-50 years" required>
+                </div>
+
+                <div class="form-group">
+                    <label>⚧️ Gender</label>
+                    <select name="gender" required>
+                        <option value="">Select Gender</option>
+                        <option value="0">👩 Female</option>
+                        <option value="1">👨 Male</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Academic Performance Section -->
+        <div class="form-section">
+            <div class="section-title">📚 Academic Performance</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>📊 Attendance (%)</label>
+                    <input type="number" name="attendance" min="0" max="100" placeholder="0-100%" required>
+                </div>
+
+                <div class="form-group">
+                    <label>⏱️ Study Hours per Day</label>
+                    <input type="number" name="study_hours" min="0" max="24" placeholder="0-24 hours" required>
+                </div>
+
+                <div class="form-group">
+                    <label>❌ Course Failures</label>
+                    <input type="number" name="failures" min="0" max="10" placeholder="0-10" required>
+                </div>
+
+                <div class="form-group">
+                    <label>🩺 Health Status</label>
+                    <select name="health" required>
+                        <option value="">Select Status</option>
+                        <option value="1">Very Poor</option>
+                        <option value="2">Poor</option>
+                        <option value="3">Average</option>
+                        <option value="4">Good</option>
+                        <option value="5">Excellent</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Socio-Economic Section -->
+        <div class="form-section">
+            <div class="section-title">💰 Socio-Economic Factors</div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>💵 Family Income Level</label>
+                    <select name="family_income" required>
+                        <option value="">Select Level</option>
+                        <option value="1">Very Low</option>
+                        <option value="2">Low</option>
+                        <option value="3">Medium</option>
+                        <option value="4">High</option>
+                        <option value="5">Very High</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🌐 Internet Access</label>
+                    <select name="internet" required>
+                        <option value="">Select Option</option>
+                        <option value="0">❌ No</option>
+                        <option value="1">✅ Yes</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label>🎯 Motivation Level</label>
+                    <select name="motivation" required>
+                        <option value="">Select Level</option>
+                        <option value="1">Very Low</option>
+                        <option value="2">Low</option>
+                        <option value="3">Medium</option>
+                        <option value="4">High</option>
+                        <option value="5">Very High</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <button type="submit">🔮 Predict Dropout Risk</button>
+        <a href="/"><button type="button" style="background: linear-gradient(135deg, #23a6d5 0%, #ee7752 100%); margin-top: 10px;">🏠 Back to Home</button></a>
+    </form>
+</div>
+
+<script>
+    // Add visual feedback on input
+    document.querySelectorAll('input, select').forEach(input => {
+        input.addEventListener('focus', function() {
+            this.style.background = '#fff';
+        });
+        
+        input.addEventListener('blur', function() {
+            if(this.value) {
+                this.style.borderColor = '#e73c7e';
+            }
+        });
+    });
+    
+    // Smooth form validation
+    document.querySelector('form').addEventListener('submit', function(e) {
+        let allFilled = true;
+        document.querySelectorAll('input[required], select[required]').forEach(field => {
+            if(!field.value) {
+                field.style.borderColor = '#ff4444';
+                allFilled = false;
+            }
+        });
+        
+        if(!allFilled) {
+            e.preventDefault();
+            alert('Please fill all required fields!');
+        }
+    });
+</script>
+
+</body>
+</html>

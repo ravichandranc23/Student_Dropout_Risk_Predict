@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading...</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='landing.css') }}">
+</head>
+<body>
+
+<div class="overlay">
+    <h1>🎓 Loading...</h1>
+    <p>Student Dropout Prediction System</p>
+    
+    <div style="margin-top: 40px;">
+        <div style="display: inline-block; width: 50px; height: 50px; border: 4px solid #e73c7e; border-top: 4px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+    </div>
+    
+    <p style="margin-top: 30px;">Preparing your prediction engine...</p>
+</div>
+
+<style>
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+</style>
+
+</body>
+</html>

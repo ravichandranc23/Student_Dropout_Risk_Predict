@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Result</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    
+    <style>
+        .result-card {
+            animation: slideUp 0.8s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        .result-box {
+            background: linear-gradient(135deg, rgba(231, 60, 126, 0.15) 0%, rgba(35, 166, 213, 0.15) 100%);
+            border: 2px solid #e73c7e;
+            border-radius: 20px;
+            padding: 30px;
+            margin: 25px 0;
+            text-align: center;
+            animation: scaleIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+        
+        @keyframes scaleIn {
+            from {
+                opacity: 0;
+                transform: scale(0.8);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .result-text {
+            font-size: 32px;
+            font-weight: 800;
+            color: #c2185b; /* stronger magenta */
+            margin: 15px 0;
+            letter-spacing: 0.5px;
+        }
+        
+        .result-percentage {
+            font-size: 56px;
+            font-weight: 900;
+            background: linear-gradient(135deg, #ee7752, #e73c7e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin: 20px 0;
+            animation: pulse 2s infinite;
+            text-shadow: 1px 1px 4px rgba(0,0,0,0.2);
+        }
+        
+        @keyframes pulse {
+            0%, 100% {
+                opacity: 1;
+                transform: scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: scale(1.05);
+            }
+        }
+        
+        .status-badge {
+            display: inline-block;
+            padding: 12px 28px;
+            background: linear-gradient(135deg, #ee7752 0%, #e73c7e 100%);
+            color: white;
+            border-radius: 30px;
+            font-weight: 700;
+            margin: 15px 0;
+            box-shadow: 0 10px 30px rgba(231, 60, 126, 0.3);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-size: 14px;
+        }
+        
+        .recommendation {
+            background: rgba(255, 255, 255, 0.95);
+            border-left: 5px solid #23a6d5;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            color: #0d47a1; /* darker blue */
+            line-height: 1.8;
+            font-size: 16px;
+        }
+        
+        .recommendation-title {
+            font-weight: 700;
+            color: #23a6d5;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .button-group {
+            display: flex;
+            gap: 15px;
+            margin-top: 25px;
+        }
+        
+        .button-group button {
+            flex: 1;
+            padding: 15px;
+        }
+        
+        .icon-large {
+            font-size: 48px;
+            margin: 10px 0;
+            animation: bounce 2s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="card result-card">
+    <h1>🎯 Prediction Result</h1>
+    
+    <div class="result-box">
+        <div class="icon-large" id="statusIcon">📊</div>
+        <div class="result-text">Dropout Risk Assessment</div>
+        <!-- show gender/pronoun -->
+        <div style="font-size:18px; margin-bottom:10px;">
+            Gender: <strong>{{ gender_word }}</strong>
+        </div>
+        <div class="result-percentage" id="riskDisplay">{{ pronoun_cap }} is at {{ prediction }}</div>
+        <div class="status-badge" id="statusBadge">Analysis Complete</div>
+    </div>
+
+    <p style="font-size: 16px; margin: 20px 0; line-height: 1.6; color: #666;">
+        This prediction is based on advanced machine learning analysis of academic and socio-economic factors. 
+        Early intervention and support can help reduce dropout risk.
+    </p>
+
+    <div class="recommendation">
+        <div class="recommendation-title">💡 Recommendation:</div>
+        <div id="recommendationText">
+            Based on the prediction, appropriate support and intervention strategies should be implemented 
+            to help the student succeed academically.
+        </div>
+    </div>
+
+    <div class="button-group">
+        <a href="/predict" style="flex: 1;"><button>🔄 New Prediction</button></a>
+        <a href="/" style="flex: 1;"><button style="background: linear-gradient(135deg, #23a6d5 0%, #ee7752 100%);">🏠 Home</button></a>
+    </div>
+</div>
+
+<script>
+    // Extract risk level from prediction text
+    const predictionText = "{{ prediction }}";
+    const riskDisplay = document.getElementById('riskDisplay');
+    const statusBadge = document.getElementById('statusBadge');
+    const recommendationText = document.getElementById('recommendationText');
+    const statusIcon = document.getElementById('statusIcon');
+
+    if(predictionText.includes('HIGH')) {
+        statusIcon.textContent = '📈';
+        statusBadge.textContent = '🔴 HIGH RISK';
+        statusBadge.style.background = 'linear-gradient(135deg, #ff4444, #ee4400)';
+        riskDisplay.textContent = `${riskDisplay.textContent.split('is at')[0]}is at ${predictionText} 📈`;
+        recommendationText.innerHTML = `
+            <strong>⚠️ Priority Actions:</strong><br>
+            • Schedule immediate counseling sessions<br>
+            • Provide additional academic support<br>
+            • Monitor attendance closely<br>
+            • Connect with academic advisor<br>
+            • Explore financial aid opportunities
+        `;
+    } else {
+        statusIcon.textContent = '📉';
+        statusBadge.textContent = '🟢 LOW RISK';
+        statusBadge.style.background = 'linear-gradient(135deg, #00d084, #00c76a)';
+        riskDisplay.textContent = `${riskDisplay.textContent.split('is at')[0]}is at ${predictionText} 📉`;
+        recommendationText.innerHTML = `
+            <strong>✅ Continue Current Progress:</strong><br>
+            • Maintain current study habits<br>
+            • Continue regular attendance<br>
+            • Engage in campus activities<br>
+            • Build peer support networks<br>
+            • Plan career development goals
+        `;
+    }
+</script>
+
+</body>
+</html>

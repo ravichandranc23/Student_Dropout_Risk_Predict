@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | Student Dropout Prediction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+</head>
+<body>
+
+<div class="container">
+    <div class="card">
+        <h2>Create Account 🎓</h2>
+        <p>Join us and start predicting</p>
+
+        <form method="POST" action="/register">
+            <div class="form-group">
+                <input type="text" name="username" placeholder="Username" required>
+            </div>
+            <div class="form-group">
+                <input type="email" name="email" placeholder="Email address" required>
+            </div>
+            <div class="form-group">
+                <input type="password" name="password" placeholder="Password" required>
+            </div>
+
+            <button type="submit">Register</button>
+        </form>
+
+        <p class="bottom-text">
+            Already have account?
+            <a href="/login">Login here</a>
+        </p>
+    </div>
+</div>
+
+</body>
+</html>

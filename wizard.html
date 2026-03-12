@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Student Dropout Prediction Wizard</title>
+
+<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- particles.js -->
+<script src="https://cdn.jsdelivr.net/npm/particles.js@2.0.0/particles.min.js"></script>
+<!-- canvas-confetti -->
+<script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+<style>
+body{margin:0;font-family:'Poppins',sans-serif;overflow-x:hidden;background:#0f2027;color:white;}
+#particles-js{position:fixed;width:100%;height:100%;top:0;left:0;z-index:-1;}
+.glass-card{width:650px;margin:30px auto;padding:30px;background:rgba(255,255,255,0.15);backdrop-filter:blur(18px);border-radius:25px;color:white;animation:fadeIn 1s ease;}
+@keyframes fadeIn{from{opacity:0;transform:translateY(20px);}to{opacity:1;transform:translateY(0);}}
+h1{text-align:center;}
+.subtitle{text-align:center;opacity:0.8;margin-bottom:20px;}
+label{display:block;margin-top:18px;font-weight:600;color:white;}
+.tooltip{position:relative;display:inline-block;margin-left:6px;}
+.tooltip span{visibility:hidden;width:260px;background:rgba(0,0,0,0.85);color:#fff;padding:8px;border-radius:8px;position:absolute;z-index:1;bottom:130%;left:50%;transform:translateX(-50%);font-size:13px;}
+.tooltip:hover span{visibility:visible;}
+input, select{width:100%;margin-top:10px;padding:10px;border-radius:10px;border:none;}
+button{margin-top:20px;padding:12px 20px;border-radius:30px;border:none;font-size:16px;cursor:pointer;transition:0.3s;}
+button:hover{transform:scale(1.05);}
+button.next{background:linear-gradient(90deg,#00ffcc,#00c6ff);color:black;}
+button.prev{background:linear-gradient(90deg,#ff4d4d,#ff9900);color:black;}
+.progress{height:10px;background:#222;border-radius:10px;margin-bottom:20px;}
+#bar{height:100%;width:0%;background:linear-gradient(90deg,#00ffcc,#00c6ff);transition:0.4s;}
+.question{display:none;position:relative;animation:slideIn 0.6s ease forwards;}
+.question.active{display:block;}
+@keyframes slideIn{from{opacity:0;transform:translateX(100px);}to{opacity:1;transform:translateX(0);}}
+.chart-container{width:100%;height:350px;margin-top:20px;position:relative;}
+</style>
+</head>
+<body>
+
+<div id="particles-js"></div>
+
+<div class="glass-card">
+<h1>🎓 Student Dropout Prediction Wizard</h1>
+<p class="subtitle">Step-by-step Interactive Form</p>
+
+<div class="progress"><div id="bar"></div></div>
+
+<form method="POST" action="/predict" id="form">
+<div id="questions">
+
+<!-- ================= FULL 34 QUESTIONS ================= -->
+<div class="question">
+<label>1. What is the student's gender? 
+<span class="tooltip">ℹ️ <span>Demographic trend analysis.</span></span></label>
+<select name="gender" required><option value="">Select</option><option>Male</option><option>Female</option></select>
+</div>
+
+<div class="question">
+<label>2. What is the student's age? 
+<span class="tooltip">ℹ️ <span>Age may influence academic performance.</span></span></label>
+<input type="number" name="age" min="15" max="60" required>
+</div>
+
+<div class="question">
+<label>3. What is the student's marital status? 
+<span class="tooltip">ℹ️ <span>Marital status may affect study focus.</span></span></label>
+<select name="marital"><option value="0">Single</option><option value="1">Married</option></select>
+</div>
+
+<div class="question">
+<label>4. Student nationality? 
+<span class="tooltip">ℹ️ <span>Helps analyze adaptation challenges.</span></span></label>
+<select name="nationality"><option value="1">Indian</option><option value="0">Other</option></select>
+</div>
+
+<div class="question">
+<label>5. Is the student displaced from hometown? 
+<span class="tooltip">ℹ️ <span>Living away may affect emotional stability.</span></span></label>
+<select name="displaced"><option>No</option><option>Yes</option></select>
+</div>
+
+<div class="question">
+<label>6. Mother's highest education level?</label>
+<select name="mother_edu"><option value="0">Low</option><option value="1">Medium</option><option value="2">High</option></select>
+</div>
+
+<div class="question">
+<label>7. Father's highest education level?</label>
+<select name="father_edu"><option value="0">Low</option><option value="1">Medium</option><option value="2">High</option></select>
+</div>
+
+<div class="question">
+<label>8. Mother's employment status?</label>
+<select name="mother_job"><option value="0">Unemployed</option><option value="1">Employed</option></select>
+</div>
+
+<div class="question">
+<label>9. Father's employment status?</label>
+<select name="father_job"><option value="0">Unemployed</option><option value="1">Employed</option></select>
+</div>
+
+<div class="question">
+<label>10. Are tuition fees paid on time?</label>
+<select name="fees"><option>Yes</option><option>No</option></select>
+</div>
+
+<div class="question">
+<label>11. Is the student receiving a scholarship?</label>
+<select name="scholarship"><option>No</option><option>Yes</option></select>
+</div>
+
+<div class="question">
+<label>12. Mode of application?</label>
+<select name="application_mode"><option value="1">Online</option><option value="2">Offline</option></select>
+</div>
+
+<div class="question">
+<label>13. Application order preference?</label>
+<select name="application_order"><option value="1">First Choice</option><option value="2">Second Choice</option></select>
+</div>
+
+<div class="question">
+<label>14. Course enrolled?</label>
+<select name="course"><option value="1">Science</option><option value="2">Arts</option><option value="3">Engineering</option></select>
+</div>
+
+<div class="question">
+<label>15. Class attendance mode?</label>
+<select name="attendance_mode"><option value="1">Day</option><option value="2">Evening</option></select>
+</div>
+
+<div class="question">
+<label>16. Previous qualification type?</label>
+<select name="previous_qualification"><option value="1">School</option><option value="2">Diploma</option></select>
+</div>
+
+<div class="question">
+<label>17. Previous qualification grade?</label>
+<input type="number" step="0.01" name="previous_grade">
+</div>
+
+<div class="question">
+<label>18. Admission grade?</label>
+<input type="number" step="0.01" name="admission_grade">
+</div>
+
+<div class="question">
+<label>19. Current semester?</label>
+<select name="semester"><option value="1">Semester 1</option><option value="2">Semester 2</option></select>
+</div>
+
+<div class="question">
+<label>20. Project marks?</label>
+<input type="number" step="0.01" name="project_marks">
+</div>
+
+<div class="question">
+<label>21. Has the student completed an internship?</label>
+<select name="internship"><option>No</option><option>Yes</option></select>
+</div>
+
+<div class="question">
+<label>22. Attendance percentage?</label>
+<input type="number" name="attendance">
+</div>
+
+<div class="question">
+<label>23. Online learning activity level?</label>
+<input type="number" name="online_activity">
+</div>
+
+<div class="question">
+<label>24. Average daily study hours?</label>
+<input type="number" name="study_hours">
+</div>
+
+<div class="question">
+<label>25. Participation in extracurricular activities?</label>
+<select name="extracurricular"><option>No</option><option>Yes</option></select>
+</div>
+
+<div class="question">
+<label>26. Distance from home to college (km)?</label>
+<input type="number" name="distance">
+</div>
+
+<div class="question">
+<label>27. Student health condition?</label>
+<select name="health"><option value="1">Poor</option><option value="2">Average</option><option value="3">Good</option></select>
+</div>
+
+<div class="question">
+<label>28. Motivation level?</label>
+<select name="motivation"><option value="1">Low</option><option value="2">Medium</option><option value="3">High</option></select>
+</div>
+
+<div class="question">
+<label>29. Peer support level?</label>
+<select name="peer_support"><option value="1">Low</option><option value="2">Medium</option><option value="3">High</option></select>
+</div>
+
+<div class="question">
+<label>30. Teacher support level?</label>
+<select name="teacher_support"><option value="1">Low</option><option value="2">Medium</option><option value="3">High</option></select>
+</div>
+
+<div class="question">
+<label>31. Transportation facilities?</label>
+<select name="transport"><option value="1">Poor</option><option value="2">Good</option></select>
+</div>
+
+<div class="question">
+<label>32. Does the student have educational debt?</label>
+<select name="debt"><option>No</option><option>Yes</option></select>
+</div>
+
+<div class="question">
+<label>33. Are fees currently up to date?</label>
+<select name="fees_update"><option>Yes</option><option>No</option></select>
+</div>
+
+<div class="question">
+<label>34. Local unemployment rate?</label>
+<input type="number" step="0.01" name="unemployment">
+</div>
+
+</div>
+
+<!-- Navigation -->
+<div style="display:flex;justify-content:space-between;">
+<button type="button" class="prev">⬅ Previous</button>
+<button type="button" class="next">Next ➡</button>
+</div>
+
+<div class="chart-container">
+<canvas id="riskChart"></canvas>
+</div>
+
+<button type="submit" id="submitBtn" style="display:none;">🚀 Predict Dropout Risk</button>
+
+</form>
+</div>
+
+<script>
+// ---------------- Wizard Navigation ----------------
+const questions = document.querySelectorAll(".question");
+const nextBtn = document.querySelector(".next");
+const prevBtn = document.querySelector(".prev");
+const submitBtn = document.getElementById("submitBtn");
+const bar = document.getElementById("bar");
+let current = 0;
+
+function showQuestion(idx){
+  questions.forEach((q,i)=>q.classList.remove("active"));
+  questions[idx].classList.add("active");
+  bar.style.width=((idx+1)/questions.length*100)+"%";
+  prevBtn.style.display = idx===0?"none":"inline-block";
+  nextBtn.style.display = idx===questions.length-1?"none":"inline-block";
+  submitBtn.style.display = idx===questions.length-1?"block":"none";
+  updateChart();
+}
+
+nextBtn.addEventListener("click",()=>{if(current<questions.length-1){current++;showQuestion(current);}});
+prevBtn.addEventListener("click",()=>{if(current>0){current--;showQuestion(current);}});
+showQuestion(current);
+
+// ---------------- Live Donut Chart ----------------
+const ctx = document.getElementById('riskChart').getContext('2d');
+const chartData={labels:['Dropout Risk','Safe'],datasets:[{data:[0,0],backgroundColor:['#ff4d4d','#00ffcc'],borderWidth:3,borderColor:'#fff',hoverOffset:20,borderRadius:10}]};
+const riskChart=new Chart(ctx,{type:'doughnut',data:chartData,options:{responsive:true,plugins:{legend:{labels:{color:'white',font:{size:14}}},tooltip:{enabled:true}},animation:{animateRotate:true,duration:800}}});
+
+function updateChart(){
+  let risk=0;
+  questions.forEach(q=>{
+    const val=q.querySelector("input, select");
+    if(val && val.value){
+      if(val.type==='select-one'){if(["No","0"].includes(val.value)) risk+=1;}
+      else{risk+=parseFloat(val.value)/50;}
+    }
+  });
+  risk=Math.min(100,risk);
+  riskChart.data.datasets[0].data=[risk,100-risk];
+  riskChart.data.datasets[0].backgroundColor=['rgba(255,77,77,'+(0.5+risk/200)+')','rgba(0,255,204,'+(0.5+(100-risk)/200)+')'];
+  riskChart.update();
+}
+
+// ---------------- Particles Background ----------------
+particlesJS("particles-js",{particles:{number:{value:100,density:{enable:true,value_area:800}},color:{value:"#00ffcc"},shape:{type:"circle"},opacity:{value:0.5,random:true},size:{value:3,random:true},line_linked:{enable:true,distance:120,color:"#00ffcc",opacity:0.4,width:1},move:{enable:true,speed:2,direction:"none",out_mode:"out"}},interactivity:{detect_on:"canvas",events:{onhover:{enable:true,mode:"grab"},onclick:{enable:true,mode:"push"}}}});
+
+// ---------------- Confetti on Submit ----------------
+document.getElementById("form").addEventListener("submit",(e)=>{
+  e.preventDefault();
+  confetti({particleCount:200,spread:70,origin:{y:0.6},colors:['#00ffcc','#ff4d4d','#ff9900']});
+  alert("Prediction submitted! 🎉 Connect backend to process.");
+});
+</script>
+
+<a href="/predict">
+  <button type="button">🚀 Continue to Prediction</button>
+</a>
+
+</body>
+</html>
